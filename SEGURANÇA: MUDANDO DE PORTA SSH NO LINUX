@@ -1,0 +1,24 @@
+SEGURANÇA: MUDANDO DE PORTA SSH NO LINUX
+*no arquivo sshd.conf editar a linha para "no"
+> vim /etc/ssh/sshd\\\\\\\_config
+	
+	PermitirRootLogin no
+
+*reiniciar o serviço SSH e verificar qual a porta esta escutando
+> sudo systemctl status ssh
+Loaded: loaded (/usr/lib/systemd/system/ssh.service; disabled; preset: enabled)
+
+*colocar o SSH iniciando com o Linux
+> sudo systemctl enable ssh
+Loaded: loaded (/usr/lib/systemd/system/ssh.service; enabled; preset: enabled)
+
+*verificar em qual porta o SSH está escutando, se for a 22 ainda precisa ser reiniciado o serviço pelo daemon ssh.service
+
+> sudo ss -tulnp | grep ssh
+tcp   LISTEN 0      4096          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=8349,fd=3))
+tcp   LISTEN 0      4096             [::]:22           [::]:*    users:(("sshd",pid=8349,fd=4))
+
+❯ sudo systemctl restart ssh.service (deve resolver)
+
+> sudo systemctl status ssh
+May 24 14:12:39 LENOVO-CLEBER sshd[12978]: Server listening on 0.0.0.0 port 221.
